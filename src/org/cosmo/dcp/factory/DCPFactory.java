@@ -5,10 +5,22 @@
  */
 package org.cosmo.dcp.factory;
 
+import org.cosmo.dcp.internal.DCPConnection;
+import org.cosmo.dcp.client.DCPClientConnection;
+import org.cosmo.dcp.server.DCPServerConnection;
+
 /**
  *
  * @author Sonu Aryan <cosmo-developer@github.com>
  */
-public abstract class DCPFactory {
-    
+public class DCPFactory {
+    public DCPConnection getConnection(DCPConnection.Type type){
+        switch(type){
+            case SERVER:
+                return new DCPServerConnection();
+            case CLIENT:
+                return new DCPClientConnection();
+        }
+        return null;
+    }
 }

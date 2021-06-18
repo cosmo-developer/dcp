@@ -11,6 +11,10 @@ package org.cosmo.dcp.internal;
  */
 public interface DCPConnection {
     public static enum Type{
-        TX,RX
+        SERVER,CLIENT
     }
+    public void connect(String ip,int port,boolean secure);
+    public void send(Message message);
+    public Message recieve();
+    public void close();
 }
