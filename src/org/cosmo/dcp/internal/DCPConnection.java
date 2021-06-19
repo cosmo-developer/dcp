@@ -17,4 +17,6 @@ public interface DCPConnection {
     public void send(Message message);
     public Message recieve();
     public void close();
+    public void sendStream(byte[] stream); //Only Secure Mode
+    public byte[] recieveStream();//Only Secure mode
 }

@@ -124,4 +124,37 @@ public class DCPServerConnection implements DCPConnection {
         }
     }
 
+    @Override
+    public void sendStream(byte[] stream) {
+        try {
+            stream = Tool.encrypt(stream, key);
+            int len = stream.length;
+            byte[] buffer = new byte[4];
+            buffer[0] = (byte) ((byte) (len >> 24) & 0xFF);
+            buffer[1] = (byte) ((byte) (len >> 16) & 0xFF);
+            buffer[2] = (byte) ((byte) ((len) >> 8) & 0xFF);
+            buffer[3] = (byte) ((byte) (len) & 0xFF);
+            bos.write(buffer);
+            bos.write(stream);
+            bos.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(DCPClientConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public byte[] recieveStream() {
+        byte[] buffer = new byte[4];
+        try {
+            bis.read(buffer);
+            int len = ((int) buffer[0] << 24) | ((int) buffer[1] << 16) | ((int) buffer[2] << 8) | ((int) buffer[3] & 0x000000FF);
+            byte[] stream = new byte[len];
+            bis.read(stream);
+            return Tool.decrypt(stream, security.getPrivateKey());
+        } catch (IOException ex) {
+            Logger.getLogger(DCPClientConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
 }
